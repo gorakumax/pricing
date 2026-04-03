@@ -4,7 +4,16 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
        <title>おねだんつけよ！</title>
     <link rel="stylesheet" href="/common/style.css">
-    <script src="/common/common/common.js" defer></script>
+    <script src="/common/common.js" defer></script>
+    <!-- マニフェストの読み込み -->
+<link rel="manifest" href="manifest.json">
+
+<!-- サービスワーカーの登録 -->
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
        <script type="text/javascript">
            function Calc() {
                var a;
