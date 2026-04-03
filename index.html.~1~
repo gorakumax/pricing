@@ -4,7 +4,7 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
        <title>おねだんつけよ！</title>
     <link rel="stylesheet" href="/common/style.css">
-    <script src="/common/common/common.js" defer></script>
+    <script src="/common/common.js" defer></script>
        <script type="text/javascript">
            function Calc() {
                var a;
