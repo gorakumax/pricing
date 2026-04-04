@@ -2,11 +2,22 @@
    <head>
    <meta name="viewport" content="width=device-width">
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <link rel="stylesheet" type="text/css" href="/common/style.css">
-       <title>おねだんつけよ！</title>
 
+       <title>おねだんつけよ！</title>
+    <link rel="stylesheet" href="/common/style.css">
+    <script src="/common/common.js" defer></script>
    </head>
-   <body bgcolor="#ffeded">
+   <body>
+<div id="menu-trigger" onclick="toggleNav()">
+    <span></span>
+    <span class="menu-text">Menu</span>
+    <span></span>
+</div>
+
+<nav id="side-nav">
+    <div data-include="topmenubar.html"></div>
+</nav>
+<div id="nav-overlay" onclick="toggleNav()"></div>
 	   <small>＜つかいかた＞<br>
 	   <small>上の５つに半角数字で入力してください。<br>
 	手数料、粗利率は設定保存ボタンを押す事で、次回立ち上げたときに自動的にその数字を読み込みます。<br>
