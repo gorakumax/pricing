@@ -1,64 +1,230 @@
-<html>
-   <head>
-   <meta name="viewport" content="width=device-width">
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 基本テンプレ -->
+	<link rel="stylesheet" href="/common/style.css">
+	<script src="/common/common.js" defer></script>
+	<!-- マニフェストの読み込み -->
+	<link rel="manifest" href="manifest.json">
+	<!-- サービスワーカーの登録 -->
+	<script>
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.register('sw.js');
+		}
+	</script>
+<!-- 基本テンプレここまで -->
+    <title>おねだんつけよ！ | つかいかた</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f9;
+            --card-bg: #ffffff;
+            --primary-color: #4a90e2;
+            --text-color: #333;
+            --accent-color: #ef4444;
+            /* ツールと共通の色 */
+            --color-a: #e6b8b7;
+            --color-b: #ccc0da;
+            --color-c: #d8e4bc;
+            --color-direct: #c4bd97;
+        }
 
-       <title>おねだんつけよ！</title>
-    <link rel="stylesheet" href="/common/style.css">
-    <script src="/common/common.js" defer></script>
-   </head>
-   <body>
-<div id="menu-trigger" onclick="toggleNav()">
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        header h1 {
+            text-align: center;
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            color: #444;
+        }
+
+        section {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 1.1rem;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 10px;
+            margin-bottom: 15px;
+            color: #222;
+        }
+
+        h3 {
+            font-size: 0.95rem;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        h3::before {
+            content: "";
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        p {
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        /* 箇条書きリスト */
+        .example-list {
+            background: #f0f4f8;
+            padding: 20px 20px 20px 40px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin: 15px 0;
+            list-style: none;
+        }
+
+        .example-list li {
+            position: relative;
+            margin-bottom: 12px;
+            color: #444;
+        }
+
+        .example-list li::before {
+            content: "";
+            position: absolute;
+            left: -20px;
+            top: 0.5em;
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+        }
+
+        /* 戻るボタン */
+        .footer-nav {
+            text-align: center;
+            margin-top: 30px;
+            padding-bottom: 50px;
+        }
+
+        .btn-back {
+            display: inline-block;
+            text-decoration: none;
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 40px;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+
+        .btn-back:hover {
+            opacity: 0.8;
+        }
+
+        /* バッジスタイル */
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+<!--サイドメニュータグ-->
+   <div id="menu-trigger" onclick="toggleNav()">
     <span></span>
     <span class="menu-text">Menu</span>
     <span></span>
 </div>
-
 <nav id="side-nav">
     <div data-include="topmenubar.html"></div>
 </nav>
 <div id="nav-overlay" onclick="toggleNav()"></div>
-	   <small>＜つかいかた＞<br>
-	   <small>上の５つに半角数字で入力してください。<br>
-	手数料、粗利率は設定保存ボタンを押す事で、次回立ち上げたときに自動的にその数字を読み込みます。<br>
-	数値を一時的に変更したい場合はそのまま入力しなおしてください。<br>設定削除ボタンは付けておりますが、ほとんどの場合上書きで保存できます。滅多なことでは削除をする必要はありません。<br>
-（ただし、端末のクリーンアップをした場合は消えていることが多いです。その場合は再度入力＆保存してください。）<br>
-入力が終われば（入力している最中も）下に結果が出ています。<br>
-</small><br>
-	  ＜結果の見方＞<br>
- <small>基本的には委託販売などが多い方々のための値段つけサポートアプリですので、委託手数料と書いておりますが店舗をお持ちの場合はそこを必要経費分とお考えいただければよいかと思います。<br>
-<br>
-☆粗利☆<br>
-自分の取り分です。ただし、そこから原材料（仕入れ）を除くパッケージ代などの経費がかかります。すでに原価に算入して全原価として計算している場合は実利益となります。<br>
-<br>
-☆販売価格☆<br>
-実際に売る値段を表示します。自分の希望価格で行くのか、粗利率から計算されたものから行くのか。折り合いのつく値段を探す参考にしてください。<br>
-<br>
-☆手数料☆<br>
-委託先に支払うマージンです。これは通常販売価格の何％と決まっていますので、実のところ思っているより利益が下がってしまう場合が多いです。<br>
-直売800円で原価300円の場合500円の利益ですが、30％マージンを支払う場合に1100円の値段をつけたとしても、手数料が330円かかるため利益は470円になってしまいます。30円の差ですが数が多く長期間になるとバカに出来ない金額になってきます。<br>
-<br>
-長く続けるためにもこの3つはしっかり理解してください。<br>
-<br></small>
-	   ＜手数料・粗利率について＞<br>
-	   <small>委託販売などで多いのは販売マージン２０～３０％が多いです。<br>
-	   ですので手数料欄には20とか30と入力します。<br>
-	   粗利率も自分では決めにくい場合がありますが、ここは手間賃や店舗にかかる経費なども含まれますので、<br>
-	   しっかりと考えていれる必要があります。<br>
-	   例）製品を購入し組み合わせて売る場合などは60<br>
-（100均材料の組み合わせでの販売等）<br>
-	   素材・材料を購入し加工後の手作り品などを販売する場合は500<br>
-（喫茶店等、手芸品などはもう少し下がる場合もあります）<br>
-	   商品そのものを仕入れて売る場合は30～50程度<br>
-（通常の仕入れからそのまま販売する雑貨店等）<br>
-	   あくまでも上記は参考程度にお考えください。</small></small><br><br><br>
-   
-             <small><a class="button--large" href="index.html">＜戻る＞</a><br>
-             <footer>
+<!--ここまで-->
+<div class="container">
+    <header>
+        <h1>＜ つかいかた ＞</h1>
+    </header>
+
+    <section>
+        <h2>基本の入力方法</h2>
+        <p>
+            画面上部の5つの項目に<span class="highlight">半角数字</span>で入力してください。入力と同時に、画面下部の計算結果がリアルタイムで更新されます。
+        </p>
+        <h3>設定の保存について</h3>
+        <p>
+            「手数料」や「粗利率」は、<span class="highlight">設定保存</span>ボタンを押すとブラウザに記録されます。次回から入力を省略できるので便利です。<br>
+            <small>※端末のクリーンアップなどを行うと消える場合があります。その際は再度入力してください。</small>
+        </p>
+    </section>
+
+    <section>
+        <h2>結果の見方</h2>
+        <p>このアプリは、委託販売やイベント出店をされる方をサポートするためのツールです。</p>
+
+        <h3><span class="badge" style="background: var(--color-b);">粗利</span>自分の取り分</h3>
+        <p>売上から原価と手数料を引いた、あなたの手元に残る金額です。ここから梱包材などの諸経費を引いたものが最終的な利益になります。</p>
+
+        <h3><span class="badge" style="background: var(--color-c);">販売価格</span>売値の目安</h3>
+        <p>実際に店頭に並べる値段です。自分の希望額でいくか、それとも計算上の理想額にするか、折り合いのつくラインを探してみましょう。</p>
+
+        <h3>手数料（マージン）</h3>
+        <p>委託先に支払う料金です。販売価格に対する％で計算されるため、<span class="highlight">「価格を上げても、その分手数料も増える」</span>点に注意が必要です。長期間・多売になるほど、この数パーセントの差が大きな影響を与えます。</p>
+    </section>
+
+    <section>
+        <h2>手数料・粗利率の目安</h2>
+        <p>数値に迷ったときの参考にしてください。</p>
+        
+        <ul class="example-list">
+            <li><strong>手数料：</strong> 委託販売では <span class="highlight">20% から 30%</span> が一般的です。</li>
+            <li><strong>粗利率 60% 程度：</strong> 既製品を組み合わせて販売する場合（100均素材の活用など）。</li>
+            <li><strong>粗利率 70% 以上：</strong> 素材から加工する手作り品や飲食（手間や技術料を多く含める場合）。</li>
+            <li><strong>粗利率 30% から 50%：</strong> 仕入れた商品をそのまま売る雑貨店など。</li>
+        </ul>
+        <p><small>※上記はあくまで一般的な目安です。ご自身の活動内容に合わせて調整してください。</small></p>
+    </section>
+
+    <div class="footer-nav">
+        <a class="btn-back" href="index.html">＜ 戻る ＞</a>
+    </div>
+
+<!--フッターテンプレ-->
+<footer>
  <!--   <nav>
         <div data-include="/common/menubar.html" class="nav-list">更新情報取得中</div>
     </nav>-->
     <div data-include="signe.html" class="signe">更新情報取得中</div>
 </footer>
-   </body>
+<!--フッターテンプレここまで-->
+</div>
+
+</body>
 </html>

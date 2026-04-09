@@ -1,290 +1,398 @@
-<html>
-   <head>
-   <meta name="viewport" content="width=device-width">
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-       <title>おねだんつけよ！</title>
-    <link rel="stylesheet" href="/common/style.css">
-    <script src="/common/common.js" defer></script>
-    <!-- マニフェストの読み込み -->
-<link rel="manifest" href="manifest.json">
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
 
-<!-- サービスワーカーの登録 -->
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-  }
-</script>
-       <script type="text/javascript">
-           function Calc() {
-               var a;
-               var b;
-               var c;
-               var d;
-               var e;
-    		   var f;
-			   
-               a = document.form1.txtA.value;
-               b = document.form1.txtB.value;
-               c = document.form1.txtC.value;
-               d = document.form1.txtD.value;
-               e = document.form1.txtE.value;
-			   g = parseInt(a) / ((100-parseInt(d))/100);
-			   h = (parseInt(a)/(100-parseInt(e)))*parseInt(e);
-			   i = (parseInt(a)+Math.round(h))/((100-parseInt(d))/100);
-			   j = Math.round(i)-Math.round(i)*((100-parseInt(d))/100);
-			   k = parseInt(b);
-			   l = (parseInt(b)+parseInt(a))/((100-parseInt(d))/100);
-			   m = Math.round(l)-Math.round(l)*((100-parseInt(d))/100);
-			   o = parseInt(c);
-			   p = Math.round(o)-Math.round(o)*((100-parseInt(d))/100);
-			   n = parseInt(c)-Math.round(p)-parseInt(a);　//pのデータを使うため下にしている
-			   r = (parseInt(a)/(100-parseInt(e)))*parseInt(e)+parseInt(a)
-			   q = Math.round(r)-parseInt(a)//rのデータを使うため下にしている
-			   s = parseInt(a)+parseInt(b)
+<!-- 基本テンプレ -->
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/common/style.css">
+	<script src="/common/common.js" defer></script>
+	<!-- マニフェストの読み込み -->
+	<link rel="manifest" href="manifest.json">
+	<!-- サービスワーカーの登録 -->
+	<script>
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.register('sw.js');
+		}
+	</script>
+<!-- 基本テンプレここまで -->
 
-var re = /(\d)(?=(\d\d\d)+(?!\d))/g;//三桁区切り
-//String(1234).replace(re, '$1,'); これが1,234になる
+    <title>おねだんつけよ！</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f9;
+            --card-bg: #ffffff;
+            --primary-color: #4a90e2;
+            --border-color: #ddd;
+            /* 元の表の色をモダンに継承 */
+            --color-a: #e6b8b7; /* 材料原価系 */
+            --color-b: #ccc0da; /* 希望粗利系 */
+            --color-c: #d8e4bc; /* 希望売価系 */
+            --color-d: #b8cce4; /* 手数料系 */
+            --color-e: #8db4e2; /* 粗利率系 */
+            --color-direct: #c4bd97; /* 直売 */
+        }
 
-               document.form1.txtG.value = "￥"+String(Math.round(g)).replace(re, '$1,')+".-"; 
-               document.form1.txtH.value = "￥"+String(Math.round(h)).replace(re, '$1,')+".-";
-               document.form1.txtI.value = "￥"+String(Math.round(i)).replace(re, '$1,')+".-";
-               document.form1.txtJ.value = "￥"+String(Math.round(j)).replace(re, '$1,')+".-";
-               document.form1.txtK.value = "￥"+String(Math.round(k)).replace(re, '$1,')+".-";
-               document.form1.txtL.value = "￥"+String(Math.round(l)).replace(re, '$1,')+".-";
-               document.form1.txtM.value = "￥"+String(Math.round(m)).replace(re, '$1,')+".-";
-               document.form1.txtN.value = "￥"+String(Math.round(n)).replace(re, '$1,')+".-";
-               document.form1.txtO.value = "￥"+String(Math.round(o)).replace(re, '$1,')+".-";
-               document.form1.txtP.value = "￥"+String(Math.round(p)).replace(re, '$1,')+".-";
-               document.form1.txtQ.value = "￥"+String(Math.round(q)).replace(re, '$1,')+".-";
-               document.form1.txtR.value = "￥"+String(Math.round(r)).replace(re, '$1,')+".-";
-               document.form1.txtS.value = "￥"+String(Math.round(s)).replace(re, '$1,')+".-";
-               document.form1.txtT.value = "￥"+String(Math.round(b)).replace(re, '$1,')+".-";
+        body {
+            font-family: sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 15px;
+            color: #333;
+            line-height: 1.4;
+        }
 
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
 
-           }
-<!--
-// --==*==-- --==*==-- --==*==-- --==*==-- --==*==--
-// クッキーへの書き込み
-// 　　引数：kword=キーワード　　kdata=データ　　kday=保存期間(日数)
-// 　　返却値：なし
-// --==*==-- --==*==-- --==*==-- --==*==-- --==*==--
-function CookieWrite(kword, kdata, kday)
-{
-  if(!navigator.cookieEnabled){    // クッキーが利用可能かどうか
-    alert(";クッキーへの書き込みができません");
-    return;
-  }
-  sday = new Date();
-  sday.setTime(sday.getTime() + (kday * 1000 * 60 * 60 * 24));
-  s2day = sday.toGMTString();
-  document.cookie = kword + "=" + escape(kdata) + ";expires=" + s2day;
-}
-// --==*==-- --==*==-- --==*==-- --==*==-- --==*==--
-// クッキーから読み込み
-// 　　引数：kword=キーワード
-// 　　返却値：データ
-// --==*==-- --==*==-- --==*==-- --==*==-- --==*==--
-function CookieRead(kword)
-{
-  if(typeof(kword) == "undefined")　　// キーワードなし
-    return "";        // 何もしないで戻る
-  kword = kword + "=";
-  kdata = "";
-  scookie = document.cookie + ";";　　　　// クッキー情報を読み込む
-  start = scookie.indexOf(kword);   　// キーワードを検索
-  if (start != -1){    // キーワードと一致するものあり
-    end = scookie.indexOf(";", start);    // 情報の末尾位置を検索
-    kdata = unescape(scookie.substring(start + kword.length, end));  // データ取り出し
-  }
-  return kdata;
-}
-// --==*==-- --==*==-- --==*==-- --==*==-- --==*==--
-// クッキー削除
-// 　　引数：kword=キーワード
-// 　　返却値：なし
-// --==*==-- --==*==-- --==*==-- --==*==-- --==*==--
-function CookieDelete(kword)
-{
-  document.cookie = kword + "=;expires=Thu,01-Jan-70 00:00:01 GMT";
-}
-//-->
-<!--
-function input(){
-alert("ボタンがクリックされました");
-}
-//-->
-       </script>
-   </head>
-   <body onload="document.form1.mybut.click()">
+        h1 {
+            text-align: center;
+            font-size: 1.25rem;
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        small {
+            display: block;
+            color: #666;
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+        }
+
+        /* 入力エリアのスタイル */
+        .input-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            border: 1px solid #ff0000; /* 元のコードの赤枠を意識 */
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .label {
+            width: 90px;
+            padding: 10px 5px;
+            font-size: 0.8rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        input[type="number"] {
+            flex: 1;
+            border: none;
+            padding: 10px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        /* ボタンエリア */
+        .btn-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            background: #eee;
+        }
+
+        .btn-save { background: var(--primary-color); color: white; }
+
+        /* 結果エリアのスタイル */
+        .result-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            border: 1px solid #0000ff; /* 元の青枠 */
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .result-header {
+            padding: 5px 10px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: flex;
+            background: #eee;
+        }
+
+        .result-body {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-top: 1px solid #0000ff;
+        }
+
+        .res-item {
+            padding: 8px 5px;
+            text-align: center;
+            border-right: 1px solid #eee;
+        }
+
+        .res-item:last-child { border-right: none; }
+
+        .res-label {
+            font-size: 0.7rem;
+            color: #666;
+            margin-bottom: 3px;
+        }
+
+        .res-val {
+            font-size: 0.9rem;
+            font-weight: bold;
+            word-break: break-all;
+        }
+
+        /* 個別カラー */
+        .bg-a { background-color: var(--color-a); }
+        .bg-b { background-color: var(--color-b); }
+        .bg-c { background-color: var(--color-c); }
+        .bg-d { background-color: var(--color-d); }
+        .bg-e { background-color: var(--color-e); }
+        .bg-direct { background-color: var(--color-direct); }
+        
+        .readonly-box { background-color: #ffeded; }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            padding-bottom: 50px;
+        }
+
+        .howtouse {
+            display: inline-block;
+            text-decoration: none;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+<!--サイドメニュータグ-->
    <div id="menu-trigger" onclick="toggleNav()">
     <span></span>
     <span class="menu-text">Menu</span>
     <span></span>
 </div>
-
 <nav id="side-nav">
     <div data-include="topmenubar.html"></div>
 </nav>
-
 <div id="nav-overlay" onclick="toggleNav()"></div>
-   <form name="form1" onsubmit="return false" oninput="Calc();">
-   おねだんつけよ！<br><br>
-<small>単純にかかった材料費などの原価の合計を入れます。</small>
-	   <table border="1" cellpadding="0" cellspacing="0" bordercolor="#ff0000">
-			   <td BgColor="#e6b8b7" align="center" Width="70px"><small>材料原価</small></td>
-			   <td><INPUT TYPE="number" NAME="txtA" style="border: none;height:25PX;width:100%;padding-left: 5px;"></td>
-		   </tr>
-	   </table>
-<br>
-<small>その商品を売ったときにどれくらい利益が欲しいかを入れます。</small>
-	   <table border="1" cellpadding="0" cellspacing="0" bordercolor="#ff0000">
-		   <tr>
-			   <td BgColor="#ccc0da" align="center" Width="70px"><small>希望粗利</small></td>
-			   <td><INPUT TYPE="number" NAME="txtB" style="border: none;height:25px;width:100%;padding-left: 5px;"></td>
-		   </tr>
-	   </table>
-<br>
-<small>その商品をどれくらいの値段で売りたいかを入れます。</small>
-	   <table border="1" cellpadding="0" cellspacing="0" bordercolor="#ff0000">
+<!--ここまで-->
+<div class="container">
+    <h1>おねだんつけよ！</h1>
 
-		   <tr>
-			   <td  BgColor="#d8e4bc" align="center" Width="70px"><small>希望売価</small></td>
-			   <td><INPUT TYPE="number" NAME="txtC" style="border: none;height:25px;width:100%;padding-left: 5px;"></td>
-		   </tr>
-	   </table>
-<br>
-<small>委託販売や、イベント出店などでマージンを払う場合の％を数字で入力します。</small>
-	   <table border="1" cellpadding="0" cellspacing="0" bordercolor="#ff0000">
-		   <tr><td BgColor="#b8cce4" align="center" Width="70px"><small>手数料(%)</small></td>
-			<td><INPUT TYPE="number" NAME="txtD" style="border: none;height:25px;width:100%;padding-left: 5px;"></td>
-		   </tr>
-	   </table>
-<br>
-<small>手作り品などの物販の場合に欲しい粗利の割合の％を数字で入力します。</small>
-	   <table border="1" cellpadding="0" cellspacing="0" bordercolor="#ff0000">
-		   <tr>
-			   <td BgColor="#8db4e2" align="center" Width="70px"><small>粗利率(%)</small></td>
-			   <td><INPUT TYPE="number" NAME="txtE" style="border: none;height:25px;width:100%;padding-left: 5px;"></td>
-		   </tr>
-	   </table><br>
-<INPUT type="button" value="設定保存" onclick='localStorage.setItem("keyword1",txtD.value); localStorage.setItem("keyword2",txtE.value);'>&nbsp;&nbsp;&nbsp;
-<INPUT type="button" value="設定削除" onclick='localStorage.removeItem("keyword1");localStorage.removeItem("keyword2");'>
-<INPUT type="hidden" NAME="mybut" value="設定読込" onclick='txtD.value = localStorage.getItem("keyword1");txtE.value = localStorage.getItem("keyword2");' >
-<br>
-<!-- クッキーテスト -->
+    <form name="form1" onsubmit="return false" oninput="Calc();">
+        <div class="input-card">
+            <small>材料費などの原価合計</small>
+            <div class="input-row">
+                <div class="label bg-a">材料原価</div>
+                <input type="number" name="txtA" placeholder="0">
+            </div>
 
-<!-- クッキーテスト -->
- <BR>
+            <small>売れた時に欲しい利益額</small>
+            <div class="input-row">
+                <div class="label bg-b">希望粗利</div>
+                <input type="number" name="txtB" placeholder="0">
+            </div>
 
-<!--           <input type="button" name="cmdCalc" value="計算" onclick="Calc()"><br>
-		   <br> -->
-<br>
-<small>材料原価と手数料を計算した、赤字ぎりぎりラインの価格です。（利益はありません）</small>
- 	   	<table border="1" cellpadding="0" cellspacing="0" bordercolor="#0000ff">
-		   <tr><td BgColor="#e6b8b7" Width="70px" align="center"><small>最低価格</small></td><td colspan=3><small><INPUT TYPE="text" NAME="txtG" style="border: none;height:22px;background-color:#ffeded;width:100%;padding-left: 5px;" readonly>
-</small></td></tr>
- 	   	</table><br>
-<small>原価、手数料、粗利を入力した数値をもとに自動で計算します。</small>
- 	   	<table border="1" cellpadding="0" cellspacing="0" bordercolor="#0000ff">
-		   <tr>
-			   <td rowspan=2 BgColor="#e6b8b7" Width="70px" align="center"><small>自動計算</small></td>
-			   <td BgColor="#e6b8b7" align="center"><small>粗利</small></td>
-			   <td BgColor="#e6b8b7" align="center"><small>販売価格</small></td>
-			   <td BgColor="#e6b8b7" align="center"><small>手数料</small></td>
-		   </tr>
-		   <tr>
-			   <td align="right"><small>
-<INPUT TYPE="text" NAME="txtH" style="border: none;height:22px;background-color:#ffeded;width:100%;padding-left: 5px;" readonly>
-</small></td>
-			   <td align="right"><small>
-<INPUT TYPE="text" NAME="txtI" style="border: none;height:22px;background-color:#ffeded;width:100%;padding-left: 5px;" readonly>
-</small></td>
-			   <td align="right"><small>
-<INPUT TYPE="text" NAME="txtJ" style="border: none;height:22px;background-color:#ffeded;width:100%;padding-left: 5px;" readonly>
-</small></td>
-		   </tr>
- 	   	</table><br>
-<small>希望粗利をもとに、どれくらいの値段で売るべきかがでます。</small>
- 	   	<table border="1" cellpadding="0" cellspacing="0" bordercolor="#0000ff">
-		   <tr>
-			   <td rowspan=2 BgColor="#ccc0da" Width="70px" align="center"><small>希望粗利</small></td>
-			   <td BgColor="#ccc0da" align="center"><small>粗利</small></td>
-			   <td BgColor="#ccc0da" align="center"><small>販売価格</small></td>
-			   <td BgColor="#ccc0da" align="center"><small>手数料</small></td>
-		   </tr>
-		   <tr>
-			   <td align="right" align="center"><small>
-<INPUT TYPE="text" NAME="txtK" style="border: none;background-color:#ccc0da;height:22px;width:100%;padding-left: 5px;" readonly>
-</small></td>
-			   <td align="right" align="center"><small>
-<INPUT TYPE="text" NAME="txtL" style="border: none;height:22px;background-color:#ffeded;width:100%;padding-left: 5px;" readonly>
-</small></td>
-			   <td align="right" align="center"><small>
-<INPUT TYPE="text" NAME="txtM" style="border: none;height:22px;background-color:#ffeded;width:100%;padding-left: 5px;" readonly>
-</small></td>
-		   </tr>
- 	   	</table><br>
-<small>希望売価をもとにどれくらいの粗利などがでるかを算出します。</small>
- 	   	<table border="1" cellpadding="0" cellspacing="0" bordercolor="#0000ff">
-		   <tr>
-			   <td rowspan=2 BgColor="#d8e4bc" Width="70px" align="center"><small>希望売価</small></td>
-			   <td BgColor="#d8e4bc" align="center"><small>粗利</small></td>
-			   <td BgColor="#d8e4bc" align="center"><small>販売価格</small></td>
-			   <td BgColor="#d8e4bc" align="center"><small>手数料</small></td>
-		   </tr>
-		   <tr>
-			   <td align="right"><small>
-<INPUT TYPE="text" NAME="txtN" style="border: none;height:22px;background-color:#ffeded;width:100%;padding-left: 5px;" readonly>
-</small></td>
-			   <td align="right"><small>
-<INPUT TYPE="text" NAME="txtO" style="border: none;background-color:#d8e4bc;height:22px;width:100%;padding-left: 5px;" readonly>
-</small></td>
-			   <td align="right"><small>
-<INPUT TYPE="text" NAME="txtP" style="border: none;height:22px;background-color:#ffeded;width:100%;padding-left: 5px;" readonly>
-</small></td>
-		   </tr>
- 	   	</table><br>
-<small>原価と粗利率から算出した直売価格を算出します。</small>
- 	   	<table border="1" cellpadding="0" cellspacing="0" bordercolor="#0000ff">
-		   <tr>
-			   <td rowspan=2 BgColor="#c4bd97" Width="70px" align="center"><small>直売価格</small></td>
-			   <td BgColor="#c4bd97" align="center"><small>粗利</small></td>
-			   <td BgColor="#c4bd97" align="center"><small>販売価格</small></td>
-		   </tr>
-		   <tr>
-			   <td align="right"><small>
-<INPUT TYPE="text" NAME="txtQ" style="border: none;height:22px;background-color:#ffeded;width:100%;padding-left: 5px;" readonly>
-</small></td>
-			   <td align="right"><small>
-<INPUT TYPE="text" NAME="txtR" style="border: none;height:22px;background-color:#ffeded;width:100%;padding-left: 5px;" readonly>
-</small></td>
-		   </tr>
-	   </table> <br>
-<small>原価と希望粗利から算出した直売価格を算出します。（実はただの足し算）</small>
- 	   	<table border="1" cellpadding="0" cellspacing="0" bordercolor="#0000ff">
-		   <tr>
-			   <td rowspan=2 BgColor="#c4bd97" Width="70px" align="center"><small>直売価格</small></td>
-			   <td BgColor="#c4bd97" align="center"><small>粗利</small></td>
-			   <td BgColor="#c4bd97" align="center"><small>販売価格</small></td>
-		   </tr>
-		   <tr>
-			   <td align="right"><small>
-<INPUT TYPE="text" NAME="txtT" style="border: none;height:22px;background-color:#ffeded;width:100%;padding-left: 5px;" readonly>
-</small></td>
-			   <td align="right"><small>
-<INPUT TYPE="text" NAME="txtS" style="border: none;height:22px;background-color:#ffeded;width:100%;padding-left: 5px;" readonly>
-</small></td>
-		   </tr>
-	   </table> 
+            <small>売りたい理想の価格</small>
+            <div class="input-row">
+                <div class="label bg-c">希望売価</div>
+                <input type="number" name="txtC" placeholder="0">
+            </div>
 
+            <small>委託手数料などの％</small>
+            <div class="input-row">
+                <div class="label bg-d">手数料(%)</div>
+                <input type="number" name="txtD" placeholder="0">
+            </div>
 
-       </form>
-	   <small><a class="button--large" href="howtouse.html">＜つかいかた＞</a><br>
+            <small>欲しい利益の割合(%)</small>
+            <div class="input-row">
+                <div class="label bg-e">粗利率(%)</div>
+                <input type="number" name="txtE" placeholder="0">
+            </div>
+
+            <div class="btn-area">
+                <button type="button" class="btn btn-save" onclick="saveData()">設定保存</button>
+                <button type="button" class="btn" onclick="deleteData()">設定削除</button>
+            </div>
+        </div>
+
+        <div class="result-section">
+            <!-- 最低価格 -->
+            <small>赤字ぎりぎりライン（利益なし）</small>
+            <div class="result-card">
+                <div class="result-header bg-a">最低価格</div>
+                <div class="result-body" style="grid-template-columns: 1fr;">
+                    <div class="res-item readonly-box">
+                        <input type="text" name="txtG" style="width:100%; border:none; background:transparent; text-align:center; font-weight:bold;" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 自動計算 -->
+            <small>原価・手数料・粗利率から算出</small>
+            <div class="result-card">
+                <div class="result-header bg-a">自動計算</div>
+                <div class="result-body">
+                    <div class="res-item readonly-box"><div class="res-label">粗利</div><input type="text" name="txtH" style="width:100%; border:none; background:transparent; font-size:0.8rem;" readonly></div>
+                    <div class="res-item readonly-box"><div class="res-label">販売価格</div><input type="text" name="txtI" style="width:100%; border:none; background:transparent; font-size:0.8rem;" readonly></div>
+                    <div class="res-item readonly-box"><div class="res-label">手数料</div><input type="text" name="txtJ" style="width:100%; border:none; background:transparent; font-size:0.8rem;" readonly></div>
+                </div>
+            </div>
+
+            <!-- 希望粗利ベース -->
+            <small>希望粗利から売るべき値段を算出</small>
+            <div class="result-card">
+                <div class="result-header bg-b">希望粗利から算出</div>
+                <div class="result-body">
+                    <div class="res-item bg-b"><div class="res-label">粗利</div><input type="text" name="txtK" style="width:100%; border:none; background:transparent; font-size:0.8rem;" readonly></div>
+                    <div class="res-item readonly-box"><div class="res-label">販売価格</div><input type="text" name="txtL" style="width:100%; border:none; background:transparent; font-size:0.8rem;" readonly></div>
+                    <div class="res-item readonly-box"><div class="res-label">手数料</div><input type="text" name="txtM" style="width:100%; border:none; background:transparent; font-size:0.8rem;" readonly></div>
+                </div>
+            </div>
+
+            <!-- 希望売価ベース -->
+            <small>希望売価から粗利を逆算</small>
+            <div class="result-card">
+                <div class="result-header bg-c">希望売価から逆算</div>
+                <div class="result-body">
+                    <div class="res-item readonly-box"><div class="res-label">粗利</div><input type="text" name="txtN" style="width:100%; border:none; background:transparent; font-size:0.8rem;" readonly></div>
+                    <div class="res-item bg-c"><div class="res-label">販売価格</div><input type="text" name="txtO" style="width:100%; border:none; background:transparent; font-size:0.8rem;" readonly></div>
+                    <div class="res-item readonly-box"><div class="res-label">手数料</div><input type="text" name="txtP" style="width:100%; border:none; background:transparent; font-size:0.8rem;" readonly></div>
+                </div>
+            </div>
+
+            <!-- 直売価格 (利率) -->
+            <small>原価と粗利率から算出した直売価格</small>
+            <div class="result-card">
+                <div class="result-header bg-direct">直売価格 (粗利率基準)</div>
+                <div class="result-body" style="grid-template-columns: 1fr 1fr;">
+                    <div class="res-item readonly-box"><div class="res-label">粗利</div><input type="text" name="txtQ" style="width:100%; border:none; background:transparent; font-size:0.8rem;" readonly></div>
+                    <div class="res-item readonly-box"><div class="res-label">販売価格</div><input type="text" name="txtR" style="width:100%; border:none; background:transparent; font-size:0.8rem;" readonly></div>
+                </div>
+            </div>
+
+            <!-- 直売価格 (希望額) -->
+            <small>原価と希望粗利を足した直売価格</small>
+            <div class="result-card">
+                <div class="result-header bg-direct">直売価格 (希望額基準)</div>
+                <div class="result-body" style="grid-template-columns: 1fr 1fr;">
+                    <div class="res-item readonly-box"><div class="res-label">粗利</div><input type="text" name="txtT" style="width:100%; border:none; background:transparent; font-size:0.8rem;" readonly></div>
+                    <div class="res-item readonly-box"><div class="res-label">販売価格</div><input type="text" name="txtS" style="width:100%; border:none; background:transparent; font-size:0.8rem;" readonly></div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <footer>
+        <a class="howtouse" href="how2use.html">＜ つかいかた ＞</a>
+        <div style="margin-top: 20px; font-size: 0.7rem; color: #aaa;">
+            Update information...
+        </div>
+    </footer>
+</div>
+
+<script>
+    // ページ読み込み時に保存データを反映
+    window.onload = function() {
+        document.form1.txtD.value = localStorage.getItem("keyword1") || "";
+        document.form1.txtE.value = localStorage.getItem("keyword2") || "";
+        Calc();
+    };
+
+    function saveData() {
+        localStorage.setItem("keyword1", document.form1.txtD.value);
+        localStorage.setItem("keyword2", document.form1.txtE.value);
+        alert("設定を保存しました");
+    }
+
+    function deleteData() {
+        localStorage.removeItem("keyword1");
+        localStorage.removeItem("keyword2");
+        document.form1.txtD.value = "";
+        document.form1.txtE.value = "";
+        Calc();
+        alert("設定を削除しました");
+    }
+
+    function Calc() {
+        const f = document.form1;
+        // 入力値の取得（空なら0）
+        const a = parseFloat(f.txtA.value) || 0;
+        const b = parseFloat(f.txtB.value) || 0;
+        const c = parseFloat(f.txtC.value) || 0;
+        const d = parseFloat(f.txtD.value) || 0;
+        const e = parseFloat(f.txtE.value) || 0;
+
+        // 計算ロジック（元コードを継承）
+        const g = a / ((100 - d) / 100);
+        const h = (a / (100 - e)) * e;
+        const i = (a + Math.round(h)) / ((100 - d) / 100);
+        const j = Math.round(i) - Math.round(i) * ((100 - d) / 100);
+        const k = b;
+        const l = (b + a) / ((100 - d) / 100);
+        const m = Math.round(l) - Math.round(l) * ((100 - d) / 100);
+        const o = c;
+        const p = Math.round(o) - Math.round(o) * ((100 - d) / 100);
+        const n = c - Math.round(p) - a;
+        const r = (a / (100 - e)) * e + a;
+        const q = Math.round(r) - a;
+        const s = a + b;
+        const t = b;
+
+        // 通貨フォーマット関数
+        const format = (val) => "￥" + Math.round(val).toLocaleString() + ".-";
+
+        // 結果の出力
+        f.txtG.value = format(g);
+        f.txtH.value = format(h);
+        f.txtI.value = format(i);
+        f.txtJ.value = format(j);
+        f.txtK.value = format(k);
+        f.txtL.value = format(l);
+        f.txtM.value = format(m);
+        f.txtN.value = format(n);
+        f.txtO.value = format(o);
+        f.txtP.value = format(p);
+        f.txtQ.value = format(q);
+        f.txtR.value = format(r);
+        f.txtS.value = format(s);
+        f.txtT.value = format(t);
+    }
+</script>
+<!--フッターテンプレ-->
 <footer>
  <!--   <nav>
         <div data-include="/common/menubar.html" class="nav-list">更新情報取得中</div>
     </nav>-->
     <div data-include="signe.html" class="signe">更新情報取得中</div>
 </footer>
-   </body>
+<!--フッターテンプレここまで-->
+</body>
 </html>
