@@ -143,11 +143,18 @@
             border-top: 1px solid #0000ff;
         }
 
-        .res-item {
-            padding: 8px 5px;
-            text-align: center;
-            border-right: 1px solid #eee;
-        }
+/* 修正箇所：.res-item の中身を左寄せにする */
+.res-item {
+    padding: 8px 5px;
+    text-align: left; /* ここを center から left に変更 */
+    border-right: 1px solid #eee;
+}
+
+/* 修正箇所：input（数値）の表示も左寄せにする */
+.res-item input {
+    text-align: left !important; /* center から left に変更 */
+    padding-left: 5px; /* 少し余白を入れるときれいです */
+}
 
         .res-item:last-child { border-right: none; }
 
